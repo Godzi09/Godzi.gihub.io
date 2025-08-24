@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Kraepelin Mini Test (Satuan)</title>
   <style>
     body {
@@ -13,6 +14,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      padding: 12px;
     }
     .container {
       background: #1e293b;
@@ -20,7 +22,8 @@
       border-radius: 16px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.5);
       text-align: center;
-      width: 350px;
+      width: 100%;
+      max-width: 400px;
     }
     h1 {
       margin-top: 0;
@@ -34,8 +37,8 @@
     }
     input[type="number"] {
       font-size: 20px;
-      padding: 8px 12px;
-      width: 100px;
+      padding: 10px 12px;
+      width: 120px;
       border: 2px solid #38bdf8;
       border-radius: 8px;
       text-align: center;
@@ -48,7 +51,7 @@
     }
     button {
       margin-top: 16px;
-      padding: 10px 18px;
+      padding: 12px 20px;
       font-size: 16px;
       border: none;
       border-radius: 8px;
@@ -57,6 +60,8 @@
       color: #0f172a;
       font-weight: bold;
       transition: background 0.3s;
+      width: 100%;
+      max-width: 200px;
     }
     button:hover {
       background: #0ea5e9;
@@ -65,6 +70,25 @@
       margin-top: 20px;
       font-size: 18px;
       color: #fbbf24;
+    }
+
+    /* Responsive untuk layar kecil (Android / iPhone) */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 18px;
+      }
+      #soal {
+        font-size: 22px;
+      }
+      input[type="number"] {
+        width: 100%;
+        font-size: 18px;
+      }
+      button {
+        font-size: 15px;
+        padding: 10px;
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -103,7 +127,7 @@ function tampilSoal(){
   a=Math.floor(Math.random()*9)+1;
   b=Math.floor(Math.random()*9)+1;
   hasil=(a+b)%10; // hanya satuan
-  soalEl.textContent=`Soal ${soalKe+1}: ${a}+${b} = ? (tulis satuan)`;
+  soalEl.textContent=`Soal ${soalKe+1}: ${a}+${b} = ? (satuan)`;
   jawabEl.value="";
   jawabEl.focus();
 }
