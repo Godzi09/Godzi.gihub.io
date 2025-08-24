@@ -1,148 +1,85 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Kraepelin Mini Test (Satuan)</title>
-  <style>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #f1f5f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 12px;
+  }
+  .container {
+    background: #1e293b;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 100%;          /* full width */
+    max-width: 500px;     /* batas di layar besar */
+  }
+
+  h1 {
+    margin-top: 0;
+    font-size: 22px;
+    color: #38bdf8;
+  }
+  #soal {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 20px 0;
+  }
+  input[type="number"] {
+    font-size: 20px;
+    padding: 10px 12px;
+    width: 120px;
+    border: 2px solid #38bdf8;
+    border-radius: 8px;
+    text-align: center;
+    outline: none;
+    background: #0f172a;
+    color: #f1f5f9;
+  }
+  button {
+    margin-top: 16px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #38bdf8;
+    color: #0f172a;
+    font-weight: bold;
+    transition: background 0.3s;
+    width: 100%;
+  }
+  #hasil {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #fbbf24;
+  }
+
+  /* Responsive khusus HP (max 600px) */
+  @media (max-width: 600px) {
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #f1f5f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 12px;
+      padding: 0;   /* rapat biar kontainer full */
     }
     .container {
-      background: #1e293b;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-      text-align: center;
       width: 100%;
-      max-width: 400px;
+      max-width: none; /* hilangkan batas lebar */
+      height: 100vh;   /* biar full screen */
+      border-radius: 0; /* card full layar */
     }
-    h1 {
-      margin-top: 0;
-      font-size: 22px;
-      color: #38bdf8;
-    }
-    #soal {
-      font-size: 28px;
-      font-weight: bold;
-      margin: 20px 0;
-    }
+    h1 { font-size: 18px; }
+    #soal { font-size: 22px; }
     input[type="number"] {
-      font-size: 20px;
-      padding: 10px 12px;
-      width: 120px;
-      border: 2px solid #38bdf8;
-      border-radius: 8px;
-      text-align: center;
-      outline: none;
-      background: #0f172a;
-      color: #f1f5f9;
-    }
-    input[type="number"]:disabled {
-      opacity: 0.6;
+      width: 80%;
+      font-size: 18px;
     }
     button {
-      margin-top: 16px;
-      padding: 12px 20px;
       font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #38bdf8;
-      color: #0f172a;
-      font-weight: bold;
-      transition: background 0.3s;
-      width: 100%;
-      max-width: 200px;
+      padding: 10px;
     }
-    button:hover {
-      background: #0ea5e9;
-    }
-    #hasil {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #fbbf24;
-    }
-
-    /* Responsive untuk layar kecil (Android / iPhone) */
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 18px;
-      }
-      #soal {
-        font-size: 22px;
-      }
-      input[type="number"] {
-        width: 100%;
-        font-size: 18px;
-      }
-      button {
-        font-size: 15px;
-        padding: 10px;
-        max-width: 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Tes Kraepelin (Mini)</h1>
-    <p id="soal">Klik Mulai untuk memulai</p>
-    <input id="jawab" type="number" disabled>
-    <br>
-    <button id="mulai">Mulai</button>
-    <p id="hasil"></p>
-  </div>
-
-<script>
-let a,b,hasil,benar=0,soalKe=0,timer;
-const soalEl=document.getElementById("soal");
-const jawabEl=document.getElementById("jawab");
-const hasilEl=document.getElementById("hasil");
-const mulaiBtn=document.getElementById("mulai");
-
-mulaiBtn.onclick=()=>{
-  benar=0; soalKe=0;
-  hasilEl.textContent="";
-  jawabEl.disabled=false;
-  tampilSoal();
-  clearTimeout(timer);
-  timer=setTimeout(selesai,30000); // 30 detik
-}
-
-jawabEl.addEventListener("keydown",e=>{
-  if(e.key==="Enter") cekJawaban();
-});
-
-function tampilSoal(){
-  if(soalKe>=30){selesai();return;}
-  a=Math.floor(Math.random()*9)+1;
-  b=Math.floor(Math.random()*9)+1;
-  hasil=(a+b)%10; // hanya satuan
-  soalEl.textContent=`Soal ${soalKe+1}: ${a}+${b} = ? (satuan)`;
-  jawabEl.value="";
-  jawabEl.focus();
-}
-
-function cekJawaban(){
-  if(Number(jawabEl.value)===hasil) benar++;
-  soalKe++;
-  tampilSoal();
-}
-
-function selesai(){
-  jawabEl.disabled=true;
-  soalEl.textContent="⏰ Waktu habis!";
-  hasilEl.textContent=`Skor Benar: ${benar} dari ${soalKe}`;
-}
-</script>
-</body>
-</html>
+  }
+</style>
