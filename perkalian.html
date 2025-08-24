@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Tes Perkalian 1-10</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      text-align: center;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 22px;
+      color: #38bdf8;
+    }
+    #soal {
+      font-size: 26px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    input[type="number"] {
+      font-size: 20px;
+      padding: 10px 12px;
+      width: 120px;
+      border: 2px solid #38bdf8;
+      border-radius: 8px;
+      text-align: center;
+      outline: none;
+      background: #0f172a;
+      color: #f1f5f9;
+    }
+    button {
+      margin-top: 16px;
+      padding: 10px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: bold;
+      transition: background 0.3s;
+      width: 100%;
+      max-width: 200px;
+    }
+    button:hover { background: #0ea5e9; }
+    #hasil {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #fbbf24;
+    }
+
+    /* Progress bar */
+    #progress-container {
+      width: 100%;
+      background: #334155;
+      border-radius: 8px;
+      margin-top: 20px;
+      height: 14px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 100%;
+      background: #38bdf8;
+      transition: width 1s linear;
+    }
+
+    /* Tombol kembali */
+    .back-btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 18px;
+      background: #f87171;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .back-btn:hover { background: #ef4444; }
+
+
+    /* Responsive khusus HP */
+    @media (max-width: 600px) {
+        .container {
+        width: 75%;
+        margin: 10px auto;
+        border-radius: 8px;
+      }
+      h1 { font-size: 18px; }
+      #soal { font-size: 22px; }
+      input[type="number"] {
+        max-width: 100%;
+        font-size: 18px;
+        padding: 10px;
+      }
+      button {
+        font-size: 15px;
+        padding: 10px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+      <h1>Tes Perkalian (1–10)</h1>
+      <div id="progress-container"><div id="progress-bar"></div></div>
+    <p id="soal">Klik Mulai untuk memulai</p>
+    <input id="jawab" type="number" disabled>
+    <br>
+    <button id="mulai">Mulai</button>
+    <p id="hasil"></p>
+    <!-- Tombol kembali -->
+    <a href="home.html" class="back-btn">⬅️ Kembali ke Home</a>
+  </div>
+
+<script>
+let a,b,hasil,benar=0,soalKe=0,timer,interval;
+const soalEl=document.getElementById("soal");
+const jawabEl=document.getElementById("jawab");
+const hasilEl=document.getElementById("hasil");
+const mulaiBtn=document.getElementById("mulai");
+const progressBar=document.getElementById("progress-bar");
+
+mulaiBtn.onclick=()=>{
+  benar=0; soalKe=0;
+  hasilEl.textContent="";
+  jawabEl.disabled=false;
+  tampilSoal();
+  clearTimeout(timer);
+  clearInterval(interval);
+  let waktu=30; // detik
+  progressBar.style.width="100%";
+  interval=setInterval(()=>{
+    waktu--;
+    progressBar.style.width=(waktu/30*100)+"%";
+    if(waktu<=0) clearInterval(interval);
+  },1000);
+  timer=setTimeout(selesai,30000); // 30 detik
+}
+
+jawabEl.addEventListener("keydown",e=>{
+  if(e.key==="Enter") cekJawaban();
+});
+
+function tampilSoal(){
+  if(soalKe>=30){selesai();return;}
+  a=Math.floor(Math.random()*10)+1;
+  b=Math.floor(Math.random()*10)+1;
+  hasil=a*b; // perkalian
+  soalEl.textContent=`Soal ${soalKe+1}: ${a} × ${b} = ?`;
+  jawabEl.value="";
+  jawabEl.focus();
+}
+
+function cekJawaban(){
+  if(Number(jawabEl.value)===hasil) benar++;
+  soalKe++;
+  tampilSoal();
+}
+
+function selesai(){
+  jawabEl.disabled=true;
+  soalEl.textContent="⏰ Waktu habis!";
+  hasilEl.textContent=`Skor Benar: ${benar} dari ${soalKe}`;
+  clearInterval(interval);
+}
+</script>
+</body>
+</html>
