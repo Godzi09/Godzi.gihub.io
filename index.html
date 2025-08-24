@@ -11,8 +11,8 @@
       color: #f1f5f9;
       margin: 0;
       padding: 0;
-/*       display:flex;
-      align-items:center; */
+      display:flex;
+      align-items:center;
     }
     .container {
       background: #1e293b;
@@ -66,6 +66,36 @@
       color: #fbbf24;
     }
 
+    /* Progress bar */
+    #progress-container {
+      width: 100%;
+      background: #334155;
+      border-radius: 8px;
+      margin-top: 20px;
+      height: 14px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 100%;
+      background: #38bdf8;
+      transition: width 1s linear;
+    }
+
+    /* Tombol kembali */
+    .back-btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 18px;
+      background: #f87171;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .back-btn:hover { background: #ef4444; }
+
     /* Responsive khusus HP */
     @media (max-width: 600px) {
       .container {
@@ -76,8 +106,9 @@
       h1 { font-size: 18px; }
       #soal { font-size: 22px; }
       input[type="number"] {
-        width: 92%;
+        max-width: 100%;
         font-size: 18px;
+        padding: 10px;
       }
       button {
         font-size: 15px;
@@ -90,26 +121,38 @@
 <body>
   <div class="container">
     <h1>Tes Kraepelin (Mini)</h1>
+    <div id="progress-container"><div id="progress-bar"></div></div>
     <p id="soal">Klik Mulai untuk memulai</p>
     <input id="jawab" type="number" disabled>
     <br>
     <button id="mulai">Mulai</button>
     <p id="hasil"></p>
+    <!-- Tombol kembali -->
+    <a href="home.html" class="back-btn">⬅️ Kembali ke Home</a>
   </div>
 
 <script>
-let a,b,hasil,benar=0,soalKe=0,timer;
+let a,b,hasil,benar=0,soalKe=0,timer,interval;
 const soalEl=document.getElementById("soal");
 const jawabEl=document.getElementById("jawab");
 const hasilEl=document.getElementById("hasil");
 const mulaiBtn=document.getElementById("mulai");
-
+const progressBar=document.getElementById("progress-bar");
+    
 mulaiBtn.onclick=()=>{
   benar=0; soalKe=0;
   hasilEl.textContent="";
   jawabEl.disabled=false;
   tampilSoal();
   clearTimeout(timer);
+  clearInterval(interval);
+  let waktu=30; // detik
+  progressBar.style.width="100%";
+  interval=setInterval(()=>{
+    waktu--;
+    progressBar.style.width=(waktu/30*100)+"%";
+    if(waktu<=0) clearInterval(interval);
+  },1000);
   timer=setTimeout(selesai,30000); // 30 detik
 }
 
@@ -137,6 +180,7 @@ function selesai(){
   jawabEl.disabled=true;
   soalEl.textContent="⏰ Waktu habis!";
   hasilEl.textContent=`Skor Benar: ${benar} dari ${soalKe}`;
+  clearInterval(interval);
 }
 </script>
 </body>
