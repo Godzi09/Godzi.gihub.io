@@ -22,16 +22,8 @@
       width: 90%;
       max-width: 500px;
     }
-    h1 {
-      margin-top: 0;
-      font-size: 22px;
-      color: #38bdf8;
-    }
-    #soal {
-      font-size: 26px;
-      font-weight: bold;
-      margin: 20px 0;
-    }
+    h1 { color: #38bdf8; font-size: 22px; margin-top: 0; }
+    #soal { font-size: 26px; font-weight: bold; margin: 20px 0; }
     input[type="number"] {
       font-size: 20px;
       padding: 10px 12px;
@@ -58,29 +50,8 @@
       max-width: 200px;
     }
     button:hover { background: #0ea5e9; }
-    #hasil {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #fbbf24;
-    }
-
-    /* Progress bar */
-    #progress-container {
-      width: 100%;
-      background: #334155;
-      border-radius: 8px;
-      margin-top: 20px;
-      height: 14px;
-      overflow: hidden;
-    }
-    #progress-bar {
-      height: 100%;
-      width: 100%;
-      background: #38bdf8;
-      transition: width 1s linear;
-    }
-
-    /* Tombol kembali */
+    #hasil { margin-top: 20px; font-size: 18px; color: #fbbf24; }
+    #timer { margin-top: 10px; font-size: 18px; color: #22c55e; }
     .back-btn {
       display: inline-block;
       margin-top: 25px;
@@ -93,66 +64,53 @@
       transition: background 0.3s;
     }
     .back-btn:hover { background: #ef4444; }
-
-
-    /* Responsive khusus HP */
-    @media (max-width: 600px) {
-        .container {
-        width: 75%;
-        margin: 10px auto;
-        border-radius: 8px;
-      }
-      h1 { font-size: 18px; }
-      #soal { font-size: 22px; }
-      input[type="number"] {
-        max-width: 100%;
-        font-size: 18px;
-        padding: 10px;
-      }
-      button {
-        font-size: 15px;
-        padding: 10px;
-        max-width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
-      <h1>Tes Perkalian (1–10)</h1>
-      <div id="progress-container"><div id="progress-bar"></div></div>
+      <h1>Tes Perkalian (1–10 Berurutan)</h1>
+    <p id="timer">⏳ Waktu: 120 detik</p>
     <p id="soal">Klik Mulai untuk memulai</p>
     <input id="jawab" type="number" disabled>
     <br>
     <button id="mulai">Mulai</button>
     <p id="hasil"></p>
-    <!-- Tombol kembali -->
-    <a href="index.html" class="back-btn">⬅️ Kembali ke Home</a>
+    <a href="home.html" class="back-btn">⬅️ Kembali ke Home</a>
   </div>
 
 <script>
-let a,b,hasil,benar=0,soalKe=0,timer,interval;
+let soalList = [];
+let index = 0, benar = 0;
+let waktu = 120, interval, selesaiFlag = false;
+
 const soalEl=document.getElementById("soal");
 const jawabEl=document.getElementById("jawab");
 const hasilEl=document.getElementById("hasil");
 const mulaiBtn=document.getElementById("mulai");
-const progressBar=document.getElementById("progress-bar");
+const timerEl=document.getElementById("timer");
+
+// Buat daftar soal 1×1 sampai 10×10
+for(let i=1;i<=10;i++){
+  for(let j=1;j<=10;j++){
+    soalList.push({a:i,b:j,hasil:i*j});
+  }
+}
 
 mulaiBtn.onclick=()=>{
-  benar=0; soalKe=0;
+  index=0; benar=0; selesaiFlag=false;
   hasilEl.textContent="";
   jawabEl.disabled=false;
   tampilSoal();
-  clearTimeout(timer);
+
+  // Reset timer
   clearInterval(interval);
-  let waktu=30; // detik
-  progressBar.style.width="100%";
+  waktu=120;
+  timerEl.textContent="⏳ Waktu: "+waktu+" detik";
   interval=setInterval(()=>{
     waktu--;
-    progressBar.style.width=(waktu/30*100)+"%";
-    if(waktu<=0) clearInterval(interval);
+    timerEl.textContent="⏳ Waktu: "+waktu+" detik";
+    if(waktu<=0){ clearInterval(interval); selesai(); }
   },1000);
-  timer=setTimeout(selesai,30000); // 30 detik
 }
 
 jawabEl.addEventListener("keydown",e=>{
@@ -160,28 +118,29 @@ jawabEl.addEventListener("keydown",e=>{
 });
 
 function tampilSoal(){
-  if(soalKe>=30){selesai();return;}
-  a=Math.floor(Math.random()*10)+1;
-  b=Math.floor(Math.random()*10)+1;
-  hasil=a*b; // perkalian
-  soalEl.textContent=`Soal ${soalKe+1}: ${a} × ${b} = ?`;
+  if(index>=soalList.length){ selesai(); return; }
+  let soal = soalList[index];
+  soalEl.textContent=`Soal ${index+1} dari ${soalList.length}: ${soal.a} × ${soal.b} = ?`;
   jawabEl.value="";
   jawabEl.focus();
 }
 
 function cekJawaban(){
-  if(Number(jawabEl.value)===hasil) benar++;
-  soalKe++;
+  if(selesaiFlag) return;
+  let soal = soalList[index];
+  if(Number(jawabEl.value)===soal.hasil) benar++;
+  index++;
   tampilSoal();
 }
 
 function selesai(){
+  if(selesaiFlag) return; // biar tidak dobel
+  selesaiFlag=true;
   jawabEl.disabled=true;
-  soalEl.textContent="⏰ Waktu habis!";
-  hasilEl.textContent=`Skor Benar: ${benar} dari ${soalKe}`;
+  soalEl.textContent="⏰ Waktu habis atau soal selesai!";
+  hasilEl.textContent=`Skor Benar: ${benar} dari ${index}`;
   clearInterval(interval);
 }
 </script>
 </body>
 </html>
-
